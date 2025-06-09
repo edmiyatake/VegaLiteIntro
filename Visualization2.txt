@@ -1,0 +1,70 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 1000,
+  "height": 600,
+  "params": [
+    {
+      "name": "selectedDecade",
+      "value": 1960,
+      "bind": {
+        "input": "range",
+        "min": 1940,
+        "max": 1980,
+        "step": 10,
+        "name": "Select Decade: "
+      }
+    }
+  ],
+  "title": "Map of US UFO Sightings by Decade",
+  "layer": [
+    {
+      "data": {
+        "url": "https://vega.github.io/vega-datasets/data/us-10m.json",
+        "format": {
+          "type": "topojson",
+          "feature": "states"
+        }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "lightgray",
+        "stroke": "white"
+      },
+      "projection": {
+        "type": "albersUsa"
+      }
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/mbietz/datasets/main/ufo-short.csv"
+      },
+      "transform": [
+        { "calculate": "toDate(datum.date)", "as": "parsed_date" },
+        { "calculate": "year(datum.parsed_date)", "as": "year" },
+        { "calculate": "floor(datum.year / 10) * 10", "as": "decade" },
+        { "filter": "datum.country === 'us'" },
+        { "filter": "datum.decade === selectedDecade" }
+      ],
+      "mark": {
+        "type": "circle",
+        "size": 20,
+        "opacity": 0.6,
+        "color": "#e45756"
+      },
+      "encoding": {
+        "longitude": { "field": "longitude", "type": "quantitative" },
+        "latitude": { "field": "latitude", "type": "quantitative" },
+        "tooltip": [
+          { "field": "city", "type": "nominal" },
+          { "field": "date", "type": "temporal", "title": "Date" },
+          { "field": "shape", "type": "nominal" },
+          { "field": "duration", "type": "nominal" },
+          { "field": "description", "type": "nominal" }
+        ]
+      },
+      "projection": {
+        "type": "albersUsa"
+      }
+    }
+  ]
+}

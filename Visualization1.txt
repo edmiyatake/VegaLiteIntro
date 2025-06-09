@@ -1,0 +1,85 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "7-Day Hourly Forecast",
+    "subtitle": "Irvine, CA",
+    "anchor": "start"
+  },
+  "width": 1000,
+  "height": 600,
+  "data": {
+    "url": "https://raw.githubusercontent.com/edmiyatake/VegaLiteIntro/refs/heads/main/forecast.json",
+    "format": {
+      "property": "properties.periods"
+    }
+  },
+  "transform": [
+    {
+      "calculate": "toDate(datum.startTime)",
+      "as": "date"
+    },
+    {
+      "calculate": "timeFormat(datum.date, '%-I%p')",
+      "as": "hour"
+    },
+    {
+      "calculate": "timeFormat(datum.date, '%a')",
+      "as": "day"
+    }
+  ],
+  "mark": {
+    "type": "bar"
+  },
+  "encoding": {
+    "x": {
+      "field": "date",
+      "type": "temporal",
+      "axis": {
+        "title": "Hour",
+        "format": "%-I%p",
+        "labelAngle": -45
+      }
+    },
+    "y": {
+      "field": "temperature",
+      "type": "quantitative",
+      "scale": {"domain": [50, 75]},
+      "axis": {
+        "title": "Temperature (°F)"
+      }
+    },
+    "color": {
+      "field": "day",
+      "type": "nominal",
+      "legend": {"title": "Day"}
+    },
+    "tooltip": [
+      {
+        "field": "startTime",
+        "type": "temporal",
+        "title": "Time",
+        "format": "%a %b %d, %-I%p"
+      },
+      {
+        "field": "temperature",
+        "type": "quantitative",
+        "title": "Temp (°F)"
+      },
+      {
+        "field": "windSpeed",
+        "type": "nominal",
+        "title": "Wind Speed"
+      },
+      {
+        "field": "probabilityOfPrecipitation.value",
+        "type": "quantitative",
+        "title": "Prob Precip (%)"
+      },
+      {
+        "field": "relativeHumidity.value",
+        "type": "quantitative",
+        "title": "Humidity (%)"
+      }
+    ]
+  }
+}

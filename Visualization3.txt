@@ -1,0 +1,52 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 1000,
+  "height": 600,
+  "title": "Race in California: Comparison of Percent of Population in 2010 and 2020",
+  "data": {
+    "url": "https://raw.githubusercontent.com/mbietz/datasets/main/census_race.csv"
+  },
+  "transform": [
+    {
+      "fold": ["yr2010", "yr2020"],
+      "as": ["Year", "Population"]
+    },
+    {
+      "calculate": "datum.Year === 'yr2010' ? 37253956 : 39538223",
+      "as": "TotalPopulation"
+    },
+    {
+      "calculate": "datum.Population / datum.TotalPopulation * 100",
+      "as": "Percent"
+    },
+    {
+      "calculate": "datum.Year === 'yr2010' ? '2010' : '2020'",
+      "as": "CensusYear"
+    }
+  ],
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "race",
+      "type": "nominal",
+      "axis": { "title": "Race", "labelAngle": -40 }
+    },
+    "y": {
+      "field": "Percent",
+      "type": "quantitative",
+      "axis": { "title": "Percent of Population", "format": ".1f" },
+      "scale": { "domain": [0, 50] }
+    },
+    "color": {
+      "field": "CensusYear",
+      "type": "nominal",
+      "scale": { "scheme": "category10" },
+      "legend": { "title": "Year" }
+    },
+    "tooltip": [
+      { "field": "race", "type": "nominal", "title": "Race" },
+      { "field": "CensusYear", "type": "nominal", "title": "Year" },
+      { "field": "Percent", "type": "quantitative", "format": ".2f", "title": "Percent of Population" }
+    ]
+  }
+}
